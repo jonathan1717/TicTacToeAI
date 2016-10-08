@@ -8,15 +8,17 @@ package net.gogume1er.tpe;
  */
 public interface TicTacToeGraphic {
 
+    boolean useAI();
+
     int play();
+
+    void played(int playedCase);
 
     void win(int winner);
 
     void fullMatrix();
 
     void updateMatrix();
-
-    void updateRound();
 
     void updateCurrentPlayer();
 
