@@ -32,7 +32,7 @@ public class TicTacToe implements Runnable {
         System.out.println("\nIntelligence artificielle " + (!useAI ? "dés": "") + "activée !\n");
 
         if(useAI)
-            this.ai = new TicTacToeAI(this);
+            this.ai = new TicTacToeAI(this, 2);
         else
             this.ai = null;
 
@@ -68,7 +68,6 @@ public class TicTacToe implements Runnable {
 
             if(this.useAI)
                 this.ai.played(choosenCase);
-
 
             if(currentPlayer == 1)
                 currentPlayer = 2;

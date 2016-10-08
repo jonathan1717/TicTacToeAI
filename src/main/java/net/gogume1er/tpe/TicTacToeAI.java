@@ -10,25 +10,29 @@ import java.util.Random;
  */
 public class TicTacToeAI {
 
+    private final TicTacToe game;
     private final Random random;
+    private final int player;
     private Movement[][] possibilities;
 
-    public TicTacToeAI(TicTacToe game) {
+    public TicTacToeAI(TicTacToe game, int player) {
+        this.game = game;
         this.random = new Random();
-        this.possibilities = new Movement(game.getMatrix(), game.getCurrentRound(),
-                game.getCurrentPlayer(), 0, 0).possibilities;
+        this.player = player;
+        this.possibilities = new Movement(this.game.getMatrix(), this.game.getCurrentRound(),
+                this.game.getCurrentPlayer(), 0, 0).possibilities;
     }
 
     public int play() {
         Movement bestPossibility = null;
-        int bestPossibilityWeight = 0;
+        int bestPossibilityWeight = Integer.MIN_VALUE;
 
         for(Movement[] lines : possibilities) {
             for(Movement possibility : lines) {
                 if(possibility == null)
                     continue;
 
-                int possibilityWeight = possibility.getWeight();
+                int possibilityWeight = possibility.min();
 
                 if(bestPossibility == null) {
                     bestPossibility = possibility;
@@ -37,8 +41,8 @@ public class TicTacToeAI {
                 }
 
                 if(possibilityWeight > bestPossibilityWeight || (possibilityWeight == bestPossibilityWeight && random.nextBoolean())) {
-                    bestPossibility = possibility;
                     bestPossibilityWeight = possibilityWeight;
+                    bestPossibility = possibility;
                 }
             }
         }
@@ -71,7 +75,7 @@ public class TicTacToeAI {
         }
 
         private Movement[][] registerPossibilities() {
-            if(this.winner != 0 || this.round >= 9)
+            if(this.winner != 0 || this.round > 10)
                 return null;
 
             Movement[][] possibilities = new Movement[3][3];
@@ -97,26 +101,52 @@ public class TicTacToeAI {
             return possibilities;
         }
 
-        private int getWeight() {
-            int weight = 0;
+        private int min() {
+            if(this.winner != 0)
+                return this.winner == TicTacToeAI.this.player ? 20 + TicTacToeAI.this.game.getCurrentRound() - this.round :
+                        -20 - TicTacToeAI.this.game.getCurrentRound() + this.round;
+            if(this.round > 9)
+                return 0;
 
-            if(this.possibilities == null)
-                return this.winner == 1 ? -10 : 10;
-
+            int worstWeight = Integer.MAX_VALUE;
 
             for(Movement[] lines : this.possibilities) {
                 for(Movement possibility : lines) {
                     if(possibility == null)
                         continue;
 
-                    if(possibility.currentPlayer == 1 && possibility.getWeight() > weight)
-                        weight = possibility.getWeight() - 1;
-                    else if(possibility.currentPlayer == 2 && possibility.getWeight() < weight)
-                        weight = possibility.getWeight() + 1;
+                    int weight = possibility.max();
+
+                    if(weight < worstWeight)
+                        worstWeight = weight;
                 }
             }
 
-            return weight;
+            return worstWeight;
+        }
+
+        private int max() {
+            if(this.winner != 0)
+                return this.winner == TicTacToeAI.this.player ? 20 - TicTacToeAI.this.game.getCurrentRound() + this.round :
+                        -20 + TicTacToeAI.this.game.getCurrentRound() - this.round;
+            if(this.round > 9)
+                return 0;
+
+            int bestWeight = Integer.MIN_VALUE;
+
+            for(Movement[] lines : this.possibilities) {
+                for(Movement possibility : lines) {
+                    if(possibility == null)
+                        continue;
+
+                    int weight = possibility.min();
+
+                    if(weight > bestWeight)
+                        bestWeight = weight;
+                }
+            }
+
+            return bestWeight;
         }
 
     }
