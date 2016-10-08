@@ -18,10 +18,20 @@ class TicTacToeConsole implements TicTacToeGraphic {
         this.input = new Scanner(System.in);
     }
 
-    // TODO
     @Override
     public boolean useAI() {
-        return true;
+        System.out.println("Intelligence artificielle activée ? (O/N)");
+
+        while(true) {
+            String response = input.next();
+
+            if(response.equalsIgnoreCase("O"))
+                return true;
+            else if(response.equalsIgnoreCase("N"))
+                return false;
+            else
+                System.out.println("\n\u001B[31mRéponse invalide !\u001B[0m");
+        }
     }
 
     @Override
@@ -39,7 +49,7 @@ class TicTacToeConsole implements TicTacToeGraphic {
                     return choosenCase;
                 }
             } catch(NumberFormatException exc) {
-                System.out.println("\n\u001B[31mNombre invalide\u001B[0m");
+                System.out.println("\n\u001B[31mNombre invalide !\u001B[0m");
             }
         }
     }

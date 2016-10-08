@@ -24,9 +24,12 @@ public class TicTacToe implements Runnable {
         this.primaryThread = new Thread(this, "Game");
         this.matrix = new int[3][3];
         this.currentPlayer = new Random().nextBoolean() ? 1 : 2;
+        this.currentRound = 1;
         this.graphic = new TicTacToeConsole(this);
 
         this.useAI = this.graphic.useAI();
+
+        System.out.println("\nIntelligence artificielle " + (!useAI ? "dés": "") + "activée !\n");
 
         if(useAI)
             this.ai = new TicTacToeAI(this);
@@ -78,7 +81,7 @@ public class TicTacToe implements Runnable {
     }
 
     private boolean checkFull() {
-        return this.currentRound >= 8;
+        return this.currentRound > 8;
     }
 
     public int getCurrentPlayer() {

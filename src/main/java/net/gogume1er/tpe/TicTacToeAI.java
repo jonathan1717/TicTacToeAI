@@ -10,37 +10,13 @@ import java.util.Random;
  */
 public class TicTacToeAI {
 
-    private final TicTacToe game;
     private final Random random;
     private Movement[][] possibilities;
 
     public TicTacToeAI(TicTacToe game) {
-        this.game = game;
         this.random = new Random();
-        this.registerPossibilities();
-    }
-
-    private void registerPossibilities() {
-        this.possibilities = new Movement[3][3];
-
-        for(int i = 0; i < this.game.getMatrix().length; i++) {
-            int[] lines = this.game.getMatrix()[i];
-            for(int j = 0; j < lines.length; j++) {
-                int currentCase = lines[j];
-
-                if(currentCase != 0)
-                    continue;
-
-                int[][] tested = TicTacToe.copyMatrix(this.game.getMatrix());
-
-                tested[i][j] = this.game.getCurrentPlayer();
-
-                int winner = TicTacToe.checkWin(tested);
-
-                possibilities[i][j] = new Movement(tested, this.game.getCurrentRound() + 1,
-                        this.game.getCurrentPlayer() == 1 ? 2 : 1, i * 3 + j, winner);
-            }
-        }
+        this.possibilities = new Movement(game.getMatrix(), game.getCurrentRound(),
+                game.getCurrentPlayer(), 0, 0).possibilities;
     }
 
     public int play() {
@@ -78,7 +54,7 @@ public class TicTacToeAI {
     }
 
     private class Movement {
-        private final int matrix[][];
+        private final int[][] matrix;
         private final int round;
         private final int currentPlayer;
         private final int playedCase;
@@ -114,7 +90,7 @@ public class TicTacToeAI {
 
                     int winner = TicTacToe.checkWin(tested);
 
-                    possibilities[i][j] = new Movement(tested, this.round + 1, currentPlayer == 1 ? 2 : 1, i * 3 + j, winner);
+                    possibilities[i][j] = new Movement(tested, this.round + 1, this.currentPlayer == 1 ? 2 : 1, i * 3 + j, winner);
                 }
             }
 
