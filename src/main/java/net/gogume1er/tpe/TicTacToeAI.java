@@ -1,5 +1,7 @@
 package net.gogume1er.tpe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -24,7 +26,7 @@ public class TicTacToeAI {
     }
 
     public int play() {
-        Movement bestPossibility = null;
+        List<Movement> bestPossibilities = new ArrayList<Movement>();
         int bestPossibilityWeight = Integer.MIN_VALUE;
 
         for(Movement[] lines : possibilities) {
@@ -34,23 +36,26 @@ public class TicTacToeAI {
 
                 int possibilityWeight = possibility.min();
 
-                if(bestPossibility == null) {
-                    bestPossibility = possibility;
+                if(bestPossibilities.isEmpty()) {
+                    bestPossibilities.add(possibility);
                     bestPossibilityWeight = possibilityWeight;
                     continue;
                 }
 
-                if(possibilityWeight > bestPossibilityWeight || (possibilityWeight == bestPossibilityWeight && random.nextBoolean())) {
+                if(possibilityWeight > bestPossibilityWeight) {
                     bestPossibilityWeight = possibilityWeight;
-                    bestPossibility = possibility;
+                    bestPossibilities.clear();
+                    bestPossibilities.add(possibility);
+                } else if(possibilityWeight == bestPossibilityWeight) {
+                    bestPossibilities.add(possibility);
                 }
             }
         }
 
-        if(bestPossibility == null)
+        if(bestPossibilities.isEmpty())
             throw new IllegalStateException("Cannot play");
 
-        return bestPossibility.playedCase;
+        return bestPossibilities.get(random.nextInt(bestPossibilities.size())).playedCase;
     }
 
     public void played(int position) {
